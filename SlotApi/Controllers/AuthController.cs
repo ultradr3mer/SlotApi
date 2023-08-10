@@ -1,11 +1,13 @@
 using Discord;
 using Discord.Rest;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Net.Http.Headers;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SlotApi.Controllers
 {
@@ -13,16 +15,14 @@ namespace SlotApi.Controllers
   [Route("[controller]")]
   public class AuthController : ControllerBase
   {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private readonly ILogger<AuthController> _logger;
+    private IHttpClientFactory clientFactory;
     private string clientId;
     private string clientSecret;
     private string redirectUri;
-    private IHttpClientFactory clientFactory;
+    private string jwtKey;
+    private string jwtIssuer;
+    private Uri apiBaseUrl = new Uri("https://discord.com/api/oauth2/");
 
     public AuthController(IHttpClientFactory clientFactory, ILogger<AuthController> logger, IConfiguration configuration)
     {
@@ -30,54 +30,78 @@ namespace SlotApi.Controllers
       this.clientSecret = configuration["Discord:ClientSecret"];
       this.redirectUri = configuration["Discord:RedirectUri"];
 
+      this.jwtKey = configuration["Jwt:Key"];
+      this.jwtIssuer = configuration["Jwt:Issuer"];
       this.clientFactory = clientFactory;
       _logger = logger;
     }
 
     [HttpGet(nameof(Authorize))]
-    public async Task<RestSelfUser> Authorize(string code)
+    public async Task<IActionResult> Authorize(string code)
     {
       var content = new FormUrlEncodedContent(new Dictionary<string, string>()
       {
-        { "client_id", this.clientId },
-        {  "client_secret", this.clientSecret },
-        { "grant_type", "authorization_code" },
-        { "code", code },
-        {"redirect_uri", this.redirectUri }
+        {"client_id", this.clientId},
+        {"redirect_uri", this.redirectUri},
+        {"client_secret", this.clientSecret},
+        {"grant_type", "authorization_code"},
+        {"code", code},
       });
 
       var httpClient = clientFactory.CreateClient("discord");
-      httpClient.BaseAddress = new Uri("https://discord.com/api/");
-      var httpResponseMessage = await httpClient.PostAsync("oauth2/token", content);
+      httpClient.BaseAddress = apiBaseUrl;
+      var httpResponseMessage = await httpClient.PostAsync("token", content);
 
-      string token = null;
-      if (httpResponseMessage.IsSuccessStatusCode)
+      if (!httpResponseMessage.IsSuccessStatusCode)
       {
-        var responseString =
-            await httpResponseMessage.Content.ReadAsStringAsync();
-
-        token = JsonConvert.DeserializeObject<TokenData>(responseString).access_token;
+        throw new Exception("");
       }
 
+      var responseString =
+            await httpResponseMessage.Content.ReadAsStringAsync();
+      var responseData = JsonConvert.DeserializeObject<TokenData>(responseString);
+
       await using var client = new DiscordRestClient(new DiscordRestConfig() { });
-      await client.LoginAsync(TokenType.Bearer, token);
+      await client.LoginAsync(TokenType.Bearer, responseData.access_token);
       var roleConnection = await client.GetCurrentUserAsync();
 
-      return roleConnection;
+      var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.jwtKey));
+      var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+      var expiration = DateTime.Now.AddSeconds(responseData.expires_in);
+
+      var claims = new[] {
+        new Claim(JwtRegisteredClaimNames.Sub, roleConnection.Id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Name, roleConnection.GlobalName),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(nameof(TokenData.access_token), responseData.access_token),
+        new Claim(nameof(TokenData.refresh_token), responseData.refresh_token),
+        new Claim(nameof(TokenData.scope), responseData.scope),
+      };
+      var token = new JwtSecurityToken(this.jwtIssuer,
+        audience: this.jwtIssuer,
+        claims: claims,
+        expires: expiration,
+        signingCredentials: credentials
+        );
+
+      var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+      return Ok(new { token = tokenString });
     }
 
     [HttpGet]
     public ContentResult Index()
     {
-      const string url = "https://discord.com/api/oauth2/authorize";
+      var url = new Uri(apiBaseUrl, "authorize");
       var param = new Dictionary<string, string>() {
-        {"client_id", this.clientId },
-        {"redirect_uri", this.redirectUri },
-        {"response_type", "code" },
+        {"client_id", this.clientId},
+        {"redirect_uri", this.redirectUri},
+        {"response_type", "code"},
         {"scope", "identify" }
       };
 
-      var newUrl = new Uri(QueryHelpers.AddQueryString(url, param));
+      var newUrl = new Uri(QueryHelpers.AddQueryString(url.AbsoluteUri, param));
 
       return new ContentResult
       {
@@ -86,10 +110,20 @@ namespace SlotApi.Controllers
       };
     }
 
-    [HttpGet(nameof(Token))]
-    public async Task<TokenData> Token(TokenData data)
+
+    [Authorize]
+    [HttpGet(nameof(Test))]
+    public ContentResult Test()
     {
-      return data;
+      var currentUser = HttpContext.User;
+
+      string name = currentUser.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
+
+      return new ContentResult
+      {
+        ContentType = "text/html",
+        Content = $"<p>Hallo {name}</p>"
+      };
     }
 
     public class TokenData
