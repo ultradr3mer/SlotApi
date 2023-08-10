@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Common;
-using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace SlotApi.Database
 {
@@ -9,11 +6,12 @@ namespace SlotApi.Database
   {
     public SlotsContext(string? connectionString) : base(new DbContextOptions<SlotsContext>())
     {
-
     }
 
     public SlotsContext(DbContextOptions<SlotsContext> options) : base(options)
     { }
+
+    public DbSet<DiscordUser> User { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,11 +28,5 @@ namespace SlotApi.Database
         property.SetScale(2);
       }
     }
-
-    public DbSet<DiscordUser> User { get; set; }
-    //public DbSet<SavedSeeds> SavedSeeds { get; set; }
-    //public DbSet<Offer> Offers { get; set; }
-    //public DbSet<GrowTent> GrowTents { get; set; }
-    //public DbSet<GrowingPlant> GrowingPlants { get; set; }
   }
 }
