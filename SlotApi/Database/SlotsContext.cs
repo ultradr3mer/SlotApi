@@ -7,18 +7,31 @@ namespace SlotApi.Database
 {
   public class SlotsContext : DbContext
   {
-    public SlotsContext()
+    public SlotsContext(string? connectionString) : base(new DbContextOptions<SlotsContext>())
+    {
+
+    }
+
+    public SlotsContext(DbContextOptions<SlotsContext> options) : base(options)
     { }
 
-    //public ZiviContext(string? connectionString) : base(connectionString)
-    //{
-    //}
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      base.OnModelCreating(modelBuilder);
 
-    //public ZiviContext(DbConnection existingConnection, bool contextOwnsConnection) : base(existingConnection, contextOwnsConnection)
-    //{
-    //}
+      var decimalProps = modelBuilder.Model
+       .GetEntityTypes()
+       .SelectMany(t => t.GetProperties())
+       .Where(p => (System.Nullable.GetUnderlyingType(p.ClrType) ?? p.ClrType) == typeof(decimal));
 
-    //public DbSet<DiscordUser> User { get; set; }
+      foreach (var property in decimalProps)
+      {
+        property.SetPrecision(18);
+        property.SetScale(2);
+      }
+    }
+
+    public DbSet<DiscordUser> User { get; set; }
     //public DbSet<SavedSeeds> SavedSeeds { get; set; }
     //public DbSet<Offer> Offers { get; set; }
     //public DbSet<GrowTent> GrowTents { get; set; }
