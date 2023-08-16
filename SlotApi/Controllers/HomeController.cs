@@ -33,7 +33,7 @@ namespace SlotApi.Controllers
       var currentUser = HttpContext.User;
 
       string id = currentUser.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-      string name = currentUser.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
+      string name = currentUser.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Name)?.Value;
 
       var user = await dbContext.User.FindAsync(id);
 

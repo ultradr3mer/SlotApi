@@ -4,6 +4,11 @@ using Microsoft.OpenApi.Models;
 using SlotApi.Database;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using System.Web.Http;
+using System.Web.Http.Cors;
+using Microsoft.Extensions.Options;
+
+var corsPolicyName = "corsPolicy";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +34,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+  c.AddServer(new OpenApiServer() { Description = "Local Instance", Url = "https://localhost:7109/" });
+  c.AddServer(new OpenApiServer() { Description = "Azure Instance", Url = "https://slots-api.azurewebsites.net/" });
+
   c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
   {
     Description = @"JWT Authorization header using the Bearer scheme.",
@@ -37,6 +45,7 @@ builder.Services.AddSwaggerGen(c =>
     Type = SecuritySchemeType.ApiKey,
     Scheme = "Bearer"
   });
+
   c.AddSecurityRequirement(new OpenApiSecurityRequirement()
       {
         {
@@ -56,6 +65,16 @@ builder.Services.AddSwaggerGen(c =>
           }
         });
 });
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy(name: corsPolicyName,
+                    policy =>
+                    {
+                      policy.AllowAnyOrigin()
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+                    });
+});
 
 var app = builder.Build();
 
@@ -67,6 +86,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseCors(corsPolicyName);
 
 app.UseAuthentication();
 app.UseAuthorization();

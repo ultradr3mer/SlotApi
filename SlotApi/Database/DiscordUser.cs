@@ -8,8 +8,7 @@ namespace SlotApi.Database
     public string DiscordId { get; set; }
 
     public string DisplayName { get; set; }
-
     public decimal Balance { get; set; }
-    public string AvatarUrl { get; internal set; }
+    public string AvatarUrl { get; set; }
   }
 }
