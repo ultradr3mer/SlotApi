@@ -70,7 +70,7 @@ builder.Services.AddCors(options =>
   options.AddPolicy(name: corsPolicyName,
                     policy =>
                     {
-                      policy.AllowAnyOrigin()
+                      policy.WithOrigins(builder.Configuration["AccessControlAllowOrigin"])
                       .AllowAnyHeader()
                       .AllowAnyMethod();
                     });
