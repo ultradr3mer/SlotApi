@@ -80,14 +80,14 @@ namespace SlotApi.Controllers
       var httpClient = clientFactory.CreateClient("discord");
       httpClient.BaseAddress = apiBaseUrl;
       var httpResponseMessage = await httpClient.PostAsync("token", content);
+      var responseString =
+            await httpResponseMessage.Content.ReadAsStringAsync();
 
       if (!httpResponseMessage.IsSuccessStatusCode)
       {
-        throw new Exception("Error Signing in with Discord.");
+        throw new Exception("Error Signing in with Discord.\r\n" + responseString);
       }
 
-      var responseString =
-            await httpResponseMessage.Content.ReadAsStringAsync();
       var tokenData = JsonConvert.DeserializeObject<TokenData>(responseString);
 
       await using var client = new DiscordRestClient(new DiscordRestConfig() { });

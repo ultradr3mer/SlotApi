@@ -4,9 +4,6 @@ using Microsoft.OpenApi.Models;
 using SlotApi.Database;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using System.Web.Http;
-using System.Web.Http.Cors;
-using Microsoft.Extensions.Options;
 
 var corsPolicyName = "corsPolicy";
 
@@ -27,7 +24,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidAudience = builder.Configuration["Jwt:Issuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
       };
-      //options.IncludeErrorDetails = true;
     });
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
@@ -77,19 +73,14 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline. Order Matters!
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();
   app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseCors(corsPolicyName);
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

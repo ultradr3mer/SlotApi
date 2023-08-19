@@ -2,7 +2,7 @@
 {
   public class CompleteLoginGetData
   {
-    public string Token { get; internal set; }
-    public long ExpiresIn { get; internal set; }
+    public string Token { get; set; }
+    public long ExpiresIn { get; set; }
   }
 }

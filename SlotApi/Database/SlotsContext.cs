@@ -12,6 +12,7 @@ namespace SlotApi.Database
     { }
 
     public DbSet<DiscordUser> User { get; set; }
+    public DbSet<SlotSpin> SlotSpins { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
