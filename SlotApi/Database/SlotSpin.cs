@@ -10,5 +10,6 @@ namespace SlotApi.Database
     public string ResultJson { get; set; }
     public string DiscordUserDiscordId { get; set; }
     public DiscordUser DiscordUser { get; set; }
+    public DateTime Created { get; set; }
   }
 }

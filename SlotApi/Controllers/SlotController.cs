@@ -5,7 +5,6 @@ using SlotApi.Controllers.GetData;
 using SlotApi.Database;
 using SlotApi.Util;
 using System.Security.Cryptography;
-using System.Text.Json.Serialization;
 
 namespace SlotApi.Controllers
 {
@@ -44,7 +43,8 @@ namespace SlotApi.Controllers
       {
         Id = Guid.NewGuid(),
         ResultJson = JsonConvert.SerializeObject(spinResult),
-        DiscordUserDiscordId = id
+        DiscordUserDiscordId = id,
+        Created = DateTime.UtcNow
       };
       await dbContext.AddAsync(spin);
       await dbContext.SaveChangesAsync();
