@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace SlotApi.Game.Test
+namespace SlotApi.Game.Test.GroupFinderTests
 {
   [TestClass]
   public class TestBoolFind

@@ -69,7 +69,7 @@ namespace SlotApi.Controllers
 
           groupData.Add(new GroupData() 
           { 
-            Points = singleGroup, 
+            Points = singleGroup.Select(p => p.Ary).ToList(), 
             Value = groupsByValue.Key, 
             Win = win
           });

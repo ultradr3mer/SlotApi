@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
 
-namespace SlotApi.Game.Test
+namespace SlotApi.Game.Test.GroupFinderTests
 {
   [TestClass]
   public class TestAllPermutations
@@ -75,7 +75,7 @@ namespace SlotApi.Game.Test
         var groups = GroupFinder.Find(singlePermutation);
         var totalGroupMember = groups.Sum(g => g.Count);
         Assert.AreEqual(singlePermutation.Sum(c => c.Count(v => v)), totalGroupMember);
-        var mult = BigInteger.Pow(simulatedValueCount - 1, (9 - totalGroupMember));
+        var mult = BigInteger.Pow(simulatedValueCount - 1, 9 - totalGroupMember);
         foreach (var singleGroup in groups)
         {
           var key = singleGroup.Count;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SlotApi.Game.Test
+namespace SlotApi.Game.Test.GroupFinderTests
 {
   [TestClass]
   public class TestIntFind

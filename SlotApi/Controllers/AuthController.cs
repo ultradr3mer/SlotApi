@@ -24,7 +24,6 @@ namespace SlotApi.Controllers
     private string clientSecret;
     private string jwtIssuer;
     private string jwtKey;
-    private string redirectUri;
 
     public AuthController(IHttpClientFactory clientFactory, ILogger<AuthController> logger, 
       IConfiguration configuration, SlotsContext dbContext)
@@ -45,7 +44,7 @@ namespace SlotApi.Controllers
       var urlAction = new Uri(apiBaseUrl, "authorize");
       var param = new Dictionary<string, string>() {
         {"client_id", this.clientId},
-        {"redirect_uri", redir ?? this.redirectUri},
+        {"redirect_uri", redir},
         {"response_type", "code"},
         {"scope", "identify" }
       };
