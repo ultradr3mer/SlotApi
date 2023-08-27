@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlotApi", "SlotApi\SlotApi.csproj", "{35446C11-07C7-42BB-93F4-558BC94F76D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlotApi", "SlotApi\SlotApi.csproj", "{35446C11-07C7-42BB-93F4-558BC94F76D5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlotApi.Game", "SlotApi.Game\SlotApi.Game.csproj", "{C505C09B-3CB7-4C3D-BA26-D2D72ABE7935}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlotApi.Game.Test", "SlotApi.Game.Test\SlotApi.Game.Test.csproj", "{7AE5AE5E-E3E2-4A85-93C0-B1CD47025CA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{35446C11-07C7-42BB-93F4-558BC94F76D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35446C11-07C7-42BB-93F4-558BC94F76D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35446C11-07C7-42BB-93F4-558BC94F76D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C505C09B-3CB7-4C3D-BA26-D2D72ABE7935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C505C09B-3CB7-4C3D-BA26-D2D72ABE7935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C505C09B-3CB7-4C3D-BA26-D2D72ABE7935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C505C09B-3CB7-4C3D-BA26-D2D72ABE7935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AE5AE5E-E3E2-4A85-93C0-B1CD47025CA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AE5AE5E-E3E2-4A85-93C0-B1CD47025CA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AE5AE5E-E3E2-4A85-93C0-B1CD47025CA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AE5AE5E-E3E2-4A85-93C0-B1CD47025CA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
