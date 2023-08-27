@@ -30,4 +30,10 @@
     <ProjectReference Include="..\SlotApi.Game\SlotApi.Game.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=7.0.22.51805">
+      <SpecificVersion>true</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+
 </Project>
