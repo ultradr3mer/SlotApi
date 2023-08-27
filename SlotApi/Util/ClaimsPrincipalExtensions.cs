@@ -12,7 +12,7 @@ namespace SlotApi.Util
 
     public static string GetName(this ClaimsPrincipal self)
     {
-      return self.Claims.First(c => c.Type == JwtRegisteredClaimNames.Name).Value;
+      return self.Claims.First(c => c.Type == ClaimTypes.Name).Value;
     }
   }
 }
