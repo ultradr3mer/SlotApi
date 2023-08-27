@@ -42,7 +42,7 @@ namespace SlotApi.Controllers
     public AuthIndexGetData AuthorizeUrl(string redir)
     {
       var urlAction = new Uri(apiBaseUrl, "authorize");
-      var param = new Dictionary<string, string>() {
+      var param = new Dictionary<string, string?>() {
         {"client_id", this.clientId},
         {"redirect_uri", redir},
         {"response_type", "code"},

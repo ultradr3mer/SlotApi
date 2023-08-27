@@ -78,7 +78,12 @@ namespace SlotApi.Controllers
         }
       }
 
-      var container = new ResultContainer() { Board = spinResult, GroupData = groupData };
+      var container = new ResultContainer() 
+      { 
+        Board = spinResult, 
+        GroupData = groupData,
+        Cost = spinValue
+      };
       var spin = new SlotSpin()
       {
         Id = Guid.NewGuid(),
