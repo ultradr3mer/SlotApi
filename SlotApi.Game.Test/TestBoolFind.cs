@@ -124,5 +124,35 @@ namespace SlotApi.Game.Test
       Assert.IsTrue(expectedGroups.Any(g => g.SetEquals(group)));
       Assert.IsTrue(expectedGroups.Any(g => g.SetEquals(group)));
     }
+
+    [TestMethod]
+    public void TestFindAll()
+    {
+      var spinResult = Util.CreateSpinResult(new List<bool>()
+      {
+        true, true, true,
+        true, true, true,
+        true, true, true
+      });
+
+      var groups = GroupFinder.Find(spinResult);
+
+      Assert.AreEqual(1, groups.Count);
+      var group = new HashSet<Vector2I>(groups[0]);
+      Assert.AreEqual(9, group.Count);
+      var expectedGroup = new HashSet<Vector2I>()
+      {
+        new Vector2I(0, 0),
+        new Vector2I(0, 1),
+        new Vector2I(0, 2),
+        new Vector2I(1, 0),
+        new Vector2I(1, 1),
+        new Vector2I(1, 2),
+        new Vector2I(2, 0),
+        new Vector2I(2, 1),
+        new Vector2I(2, 2)
+      };
+      Assert.IsTrue(expectedGroup.SetEquals(group));
+    }
   }
 }
