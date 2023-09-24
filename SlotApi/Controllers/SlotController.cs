@@ -53,10 +53,10 @@ namespace SlotApi.Controllers
       }
       user.Balance -= spinValue;
 
-      var spinResult = this.SpinInternal(3, 3, valueCount);
+      var spinResult = SpinGenerator.Spin(3, 3, valueCount);
       var groups = GroupFinder.Find(spinResult, valueCount);
       var groupData = new List<GroupData>();
-      foreach (var groupsByValue in groups.ToList())
+      foreach (var groupsByValue in groups)
       {
         foreach(var singleGroup in groupsByValue.Value) 
         {
@@ -102,15 +102,6 @@ namespace SlotApi.Controllers
         Result = spinResult,
         GroupData = groupData
       };
-    }
-
-    private List<List<int>> SpinInternal(int width, int height, int range)
-    {
-      return Enumerable.Range(0, width).Select(
-        x => Enumerable.Range(0, height).Select(
-          y => RandomNumberGenerator.GetInt32(range))
-        .ToList())
-        .ToList();
     }
   }
 }
