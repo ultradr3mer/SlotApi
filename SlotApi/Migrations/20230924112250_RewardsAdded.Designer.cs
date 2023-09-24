@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SlotApi.Database;
 
@@ -11,9 +12,10 @@ using SlotApi.Database;
 namespace SlotApi.Migrations
 {
     [DbContext(typeof(SlotsContext))]
-    partial class SlotsContextModelSnapshot : ModelSnapshot
+    [Migration("20230924112250_RewardsAdded")]
+    partial class RewardsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,26 @@ namespace SlotApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("SlotApi.Database.DailyReward", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Claimed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DiscordUserDiscordId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiscordUserDiscordId");
+
+                    b.ToTable("DailyRewards");
+                });
 
             modelBuilder.Entity("SlotApi.Database.DiscordUser", b =>
                 {
@@ -34,12 +56,6 @@ namespace SlotApi.Migrations
                     b.Property<decimal>("Balance")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("DailyRewardLast")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DailyRewardStreak")
-                        .HasColumnType("int");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -76,6 +92,17 @@ namespace SlotApi.Migrations
                     b.HasIndex("DiscordUserDiscordId");
 
                     b.ToTable("SlotSpins");
+                });
+
+            modelBuilder.Entity("SlotApi.Database.DailyReward", b =>
+                {
+                    b.HasOne("SlotApi.Database.DiscordUser", "DiscordUser")
+                        .WithMany()
+                        .HasForeignKey("DiscordUserDiscordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DiscordUser");
                 });
 
             modelBuilder.Entity("SlotApi.Database.SlotSpin", b =>

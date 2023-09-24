@@ -5,5 +5,6 @@
     public decimal Balance { get; internal set; }
     public string? Name { get; internal set; }
     public string Avatar { get; internal set; }
+    public RewardInfo DailyReward { get; internal set; }
   }
 }
